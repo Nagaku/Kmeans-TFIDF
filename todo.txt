@@ -1,0 +1,10 @@
+Pertanyaan?
+    1. [TF-IDF] Angka dimasukkan?
+    2. [TF-IDF] Tanggal dimasukkan?
+    3. [TF-IDF] Seluruh dokumen yang dimasukkan? Perdokumen?
+
+TODOS:
+    1. --help
+    2. Graph? Visuals?
+    3. README.md
+    4. Output file
