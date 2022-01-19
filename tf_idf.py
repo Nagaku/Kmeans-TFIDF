@@ -18,6 +18,22 @@ class TfIdf:
         self.idf_val = {}
         self.tf_idf_val = {}
 
+    def get_text_output(self, no_kalimat):
+        output_text = sub('\s+', ' ', self.kalimat)
+        output_text = sub('(\.)', '.|?', output_text)
+        output_text = output_text.split('|?')
+        kamus = {}
+        for l, lv in enumerate(output_text):
+            Sn = 'S%d' % l
+            kamus[Sn] = lv
+        text = ''
+        for i, iv in enumerate(no_kalimat):
+            text += kamus[iv['data']]
+        # print(kamus)
+        text = sub('(^\s+|\s+$)(.*)', r'\2', text)
+        return text
+        
+
     def check_doc_unique(self, unique):
         dokumen_term = {}
         for i, iv in enumerate(unique):
@@ -32,7 +48,7 @@ class TfIdf:
 
     def set_idf_value(self):
         # if len(self.dokumen_term_perdoc) == 0:
-        kalimat_len = len(self.stopword_val)
+        kalimat_len = len(self.stopword_val) # 8
         for i in self.frekuensi_term:
             SnDF = round(kalimat_len/self.frekuensi_term[i], 3)
             self.idf_val[i] = round(log(SnDF, 10), 3)
@@ -40,18 +56,20 @@ class TfIdf:
     def set_tf_idf_value(self):
         tf_idf = {}
         total_tf_idf = {}
+        # Inisialisasi 0
         for l in range(len(self.stopword_val)):
-            Sn = 'S%d' % l
-            total_tf_idf[Sn] = 0
-        for l in self.frekuensi_term_perkalimat:
+            Sn = 'S%d' % l # S0 S1 S2 S3
+            total_tf_idf[Sn] = 0 # S1 = 0 S2 = 0
+        # Proses pencarian
+        for l in self.frekuensi_term_perkalimat: # l = 'rencana'
             sub = {}
-            for i in range(len(self.stopword_val)):
-                Sn = 'S%d' % i
-                sub[Sn] = self.idf_val[l] * self.frekuensi_term_perkalimat[l][Sn]
+            for i in range(len(self.stopword_val)): # i = 0
+                Sn = 'S%d' % i # S0 
+                # Sub = {'S0': idf_val['rencana'] * frekuensi_term_perkalimat['rencana']['S0'], 'S1'...}
+                sub[Sn] = self.idf_val[l] * self.frekuensi_term_perkalimat[l][Sn] 
                 total_tf_idf[Sn] = round(total_tf_idf[Sn] + sub[Sn], 3)
             tf_idf[l] = sub
         self.tf_idf_val = total_tf_idf
-
     
     def process(self):
         self.case_folding()
@@ -67,17 +85,18 @@ class TfIdf:
 
     def pemecah_kalimat(self):
         one_liner = sub('(\r\n)|[\r\n]', ' ', self.case_fold)
-        add_split = sub('(\.\s)', '.|?', one_liner)
-        kalimat_pecahan = add_split.split('|?')
+        # add_split = sub('(\.\s)', '.|?', one_liner)
+        kalimat_pecahan = one_liner.split('.')
         for index, line in enumerate(kalimat_pecahan):
-            self.perkalimat.append(line);
+            self.perkalimat.append(line)
 
     def filtering(self):
         for index, line in enumerate(self.perkalimat):
             filter_kalimat = sub('[\!\(\<\]\@\)\:\|\#\.\;\\\$\,\/\+\%\„\?\=\^\"\{\_\&\}\,\*\>\[\t\r\n(\(.*\))]|(\d+\/\d+\/\d+)', '', line)
             filter_kalimat = sub('[\-|\s{2,}]', ' ', filter_kalimat)
             filter_kalimat = sub('(^\s+|\s+$)(.*)', r'\2', filter_kalimat)
-            self.filter.append(filter_kalimat)
+            if filter_kalimat:
+                self.filter.append(filter_kalimat)     
 
     def stopword_removal(self):
         stopwords = stopword.get_stopwod_stringed()
@@ -100,22 +119,23 @@ class TfIdf:
         self.unique = unique
 
     def set_frekuensi_term(self):
+        # unique = ['rencana', 'jakarta']
         for i, iv in enumerate(self.unique):
-            nums = []
+            nums = [] # S0: 1, S2: 2, S3: 0, ..., S7: 0
             total = 0
             for l, lv in enumerate(self.stopword_val):
                 num = 0
                 regex = '\\b%s\\b' % iv
-                appear = findall(regex, lv)
-                num = len(appear)
+                appear = findall(regex, lv) # return ['rencana', 'rencana']
+                num = len(appear) # 2
                 total += num
                 nums.append(num)
             kamus = {}
+            # kamus = {'asd': kv}
             for k, kv in enumerate(nums):
                 kamus['S%d' % k] = kv
             self.frekuensi_term_perkalimat[iv] = kamus
             self.frekuensi_term[iv] = total
-            
 
     def set_dokumen_term(self, dokumen_term):
         self.dokumen_term = dokumen_term.copy()

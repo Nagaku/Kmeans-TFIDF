@@ -4,6 +4,7 @@ from re import match
 from stopword import stopword
 from errors import *
 from tf_idf import TfIdf
+from time import gmtime, strftime
 
 
 class Document:
@@ -12,26 +13,36 @@ class Document:
         self.tf_idf = tf_idf
 
 docs = []
+OUTPUT = False
 
+# Menerima input dari terminal dan melakukan pengecekan
 def read_input():
+    # Tidak ada masukan
     if len(argv) < 2:
         error(ERRDOCPAR)
+    # Masukan tidak lengkap
+    if check_argv(argv, '--help'):
+        print('#HELp')
+        exit()
+    elif not check_argv(argv, '--document'):
+        print('#HELp')
+        exit()
+    elif not check_argv(argv, '--stopword'):
+        print('#HELp')
+        exit()
+
+
     OPTION = ''
     for i in range(1, len(argv)):
-        if check_argv(argv, '--help'):
-            print('#HELp')
-            exit()
-        elif not check_argv(argv, '--document'):
-            print('#HELp')
-            exit()
-        elif not check_argv(argv, '--stopword'):
-            print('#HELp')
-            exit()
 
         if argv[i] == '--document':
             OPTION = 'DOCUMENT'
         elif argv[i] == '--stopword':
             OPTION = 'STOPWORD'
+        elif argv[i] == '--output':
+            OPTION = 'output'
+            global OUTPUT
+            OUTPUT = True
         elif argv[i]: 
             if (match('.*\.txt$', argv[i])):
                 switch(OPTION, argv[i])
@@ -53,8 +64,6 @@ def switch(option, filename):
         read_documents(filename)
     elif option == 'STOPWORD':
         read_stopword(filename)
-    else:
-        error(ERRGENERAL)
 
 def read_documents(filename):
     try:
@@ -79,6 +88,7 @@ def read_stopword(filename):
     stopword.set_stopword(clump)
     file_handler.close()
 
+# Mengubah menjadi satu baris
 def translate_text(file_handler):
     text = ''
     while(1):
@@ -113,6 +123,16 @@ def build_tf_idf():
         docs[i].tf_idf.set_idf_value()
         docs[i].tf_idf.set_tf_idf_value()
     
+def write_output(filename, text):
+    global OUTPUT
+    if OUTPUT:
+        fn = 'output/' + filename + strftime("_%a_%d_%b_%Y_%H_%M_%S.txt", gmtime())
+        file_output = open(fn, 'at')
+        file_output.write(text)
+        file_output.close()
+        print('File output di output/%s' % fn)
+
+# entry document.py
 def doc_init():
     read_input()
     build_tf_idf()
