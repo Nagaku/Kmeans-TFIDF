@@ -5,7 +5,7 @@ from sys import maxsize
 from copy import deepcopy
 from math import floor, ceil
 
-jumlah_cluster = 3
+jumlah_cluster = 2
 
 kmeans = []
 

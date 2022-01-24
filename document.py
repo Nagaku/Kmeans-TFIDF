@@ -127,14 +127,13 @@ def build_tf_idf():
 def write_output(filename, text):
     global OUTPUT
     if OUTPUT:
-        if exists('output'):
-            fn = 'output/' + filename + strftime("_%a_%d_%b_%Y_%H_%M_%S.txt", gmtime())
-            file_output = open(fn, 'at')
-            file_output.write(text)
-            file_output.close()
-            print('File output di %s' % fn)
-        else :
+        if not exists('output'):
             mkdir('output')
+        fn = 'output/' + filename + strftime("_%a_%d_%b_%Y_%H_%M_%S.txt", gmtime())
+        file_output = open(fn, 'at')
+        file_output.write(text)
+        file_output.close()
+        print('File output di %s' % fn)
 
 # entry document.py
 def doc_init():
