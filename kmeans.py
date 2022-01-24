@@ -5,7 +5,7 @@ from sys import maxsize
 from copy import deepcopy
 from math import floor, ceil
 
-jumlah_cluster = 2
+jumlah_cluster = 3
 
 kmeans = []
 
@@ -128,8 +128,6 @@ def define_kmeans():
                 Sn = 'S%d' % random_int
                 anggota.append({'data': Sn, 'value': iv.tf_idf.tf_idf_val[Sn], 'diff': {}})
             cluster.append(Cluster('C%d' % k, anggota))
-            print('C%d' % k)
-            print(anggota)
         kmeans.append(Kmeans(iv.document_name, cluster, iv.tf_idf.tf_idf_val))
 
 def get_bool(bool_val):
@@ -145,13 +143,18 @@ def kmeans_init():
         print()
         print(iv.document_name)
         it = 0
+        
+        print()
+        print('Mengalokasikan data ke dalam cluster secara acak...')
+        for l in range(jumlah_cluster):
+            print(iv.cluster[l].get_cluster_stringed())
 
         while 1:
             iv.calculate_diff()
             print('\nIterasi %d changed? %s' % (it, get_bool(iv.check_changes())))
             it += 1
-            print(iv.cluster[0].get_cluster_stringed())
-            print(iv.cluster[1].get_cluster_stringed())
+            for l in range(jumlah_cluster):
+                print(iv.cluster[l].get_cluster_stringed())
             iv.calculate_all_centeroid()
             if not iv.check_changes():
                 break
@@ -159,12 +162,13 @@ def kmeans_init():
         iv.calculate_diff()
         print('\nIterasi %d changed? %s' % (it, get_bool(iv.check_changes())))
         it += 1
-        print(iv.cluster[0].get_cluster_stringed())
-        print(iv.cluster[1].get_cluster_stringed())
+        for l in range(jumlah_cluster):
+            print(iv.cluster[l].get_cluster_stringed())
         iv.calculate_all_centeroid()
         print('\n')
         # print(iv.cluster[iv.pick_highest()['index']].anggota)
         # iv.document_name, docs[i].tf_idf.get_text_output(iv.cluster[iv.pick_highest()['index']].anggota)
+        print('Hasil akhir dipakai cluster: %s' % iv.cluster[iv.pick_highest()['index']].cluster_name)
         write_output(iv.document_name, docs[i].tf_idf.get_text_output(iv.cluster[iv.pick_highest()['index']].anggota))
 
 

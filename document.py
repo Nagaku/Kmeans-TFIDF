@@ -1,6 +1,7 @@
 from sys import argv
 from re import match
-
+from os.path import exists
+from os import mkdir
 from stopword import stopword
 from errors import *
 from tf_idf import TfIdf
@@ -126,11 +127,14 @@ def build_tf_idf():
 def write_output(filename, text):
     global OUTPUT
     if OUTPUT:
-        fn = 'output/' + filename + strftime("_%a_%d_%b_%Y_%H_%M_%S.txt", gmtime())
-        file_output = open(fn, 'at')
-        file_output.write(text)
-        file_output.close()
-        print('File output di output/%s' % fn)
+        if exists('output'):
+            fn = 'output/' + filename + strftime("_%a_%d_%b_%Y_%H_%M_%S.txt", gmtime())
+            file_output = open(fn, 'at')
+            file_output.write(text)
+            file_output.close()
+            print('File output di %s' % fn)
+        else :
+            mkdir('output')
 
 # entry document.py
 def doc_init():

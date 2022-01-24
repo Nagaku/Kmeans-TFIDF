@@ -1,0 +1,14 @@
+Tampilan dalam format hierarkis. Di bagian atas setiap pohon adalah file di mana kesalahan atau peringatan‑
+ing ditemukan. Kemudian, di bawah simpul itu ada daftar kesalahan dan peringatan, termasuk baris dan
+posisi karakter di mana mereka berada. Mengklik dua kali salah satu item akan membuka editor untuk file itu
+dan posisikan kursor ke baris itu.
+Di sisi kanan bilah atas pada Gambar 2‑21 adalah beberapa kontrol lain yang dapat berguna ketika
+Anda memiliki banyak kesalahan dan peringatan untuk disaring. Pertama, ada kotak teks filter. Masukkan beberapa teks
+dan hanya kesalahan dan peringatan yang berisi teks yang akan muncul di jendela. Ada juga
+tombol roda gigi di sisi kanan kotak teks. Ini menyediakan filter otomatis berdasarkan File:
+Kecualikan pengaturan.
+Pengaturan ini mengontrol file mana yang muncul di pohon Explorer. Lebih khusus lagi, ini adalah kumpulan dari
+pola glob, yang menentukan file dan folder yang tidak muncul di Explorer. Pengaturan
+juga digunakan untuk membatasi file atau folder mana yang muncul dalam hasil pencarian. Misalnya, Anda
+mungkin tidak ingin mencari melalui file di direktori node_modules, karena berisi kode pihak ketiga. Anda dapat memasukkan pola dalam pengaturan Files: Exclude (lihat contoh di bawah ini
+bagian) dan tidak ada file tersebut yang akan dimasukkan ke dalam hasil pencarian.

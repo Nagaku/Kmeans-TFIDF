@@ -31,9 +31,9 @@ class TfIdf:
             text += kamus[iv['data']]
         # print(kamus)
         text = sub('(^\s+|\s+$)(.*)', r'\2', text)
-        return text
-        
+        return text     
 
+    # Melakukan pengecekan array kata unique pada it_idf ini
     def check_doc_unique(self, unique):
         dokumen_term = {}
         for i, iv in enumerate(unique):
@@ -50,8 +50,11 @@ class TfIdf:
         # if len(self.dokumen_term_perdoc) == 0:
         kalimat_len = len(self.stopword_val) # 8
         for i in self.frekuensi_term:
-            SnDF = round(kalimat_len/self.frekuensi_term[i], 3)
-            self.idf_val[i] = round(log(SnDF, 10), 3)
+            if self.frekuensi_term[i] == 0:
+                SnDf = 0
+            else:
+                SnDF = round(kalimat_len/self.frekuensi_term[i], 3)
+            self.idf_val[i] = log(SnDF, 10)
 
     def set_tf_idf_value(self):
         tf_idf = {}
@@ -61,15 +64,19 @@ class TfIdf:
             Sn = 'S%d' % l # S0 S1 S2 S3
             total_tf_idf[Sn] = 0 # S1 = 0 S2 = 0
         # Proses pencarian
+        S2 = 0
+        S3 = 0
         for l in self.frekuensi_term_perkalimat: # l = 'rencana'
             sub = {}
             for i in range(len(self.stopword_val)): # i = 0
                 Sn = 'S%d' % i # S0 
                 # Sub = {'S0': idf_val['rencana'] * frekuensi_term_perkalimat['rencana']['S0'], 'S1'...}
                 sub[Sn] = self.idf_val[l] * self.frekuensi_term_perkalimat[l][Sn] 
-                total_tf_idf[Sn] = round(total_tf_idf[Sn] + sub[Sn], 3)
+                total_tf_idf[Sn] = total_tf_idf[Sn] + sub[Sn]
             tf_idf[l] = sub
         self.tf_idf_val = total_tf_idf
+        
+        
     
     def process(self):
         self.case_folding()
